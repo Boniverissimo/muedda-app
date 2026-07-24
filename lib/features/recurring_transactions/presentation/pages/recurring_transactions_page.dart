@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/ledger_entries_providers.dart';
 import '../../../../core/providers/recurring_transactions_providers.dart';
 import '../widgets/recurring_transaction_form_dialog.dart';
 
@@ -14,7 +15,16 @@ class RecurringTransactionsPage extends ConsumerWidget {
     final recurringAsync = ref.watch(recurringTransactionsStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Recorrências')),
+      appBar: AppBar(
+        title: const Text('Recorrências'),
+        actions: [
+          IconButton(
+            tooltip: 'Gerar lançamentos pendentes',
+            onPressed: () => _generateNow(context, ref),
+            icon: const Icon(Icons.sync_rounded),
+          ),
+        ],
+      ),
       body: recurringAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(
@@ -50,6 +60,36 @@ class RecurringTransactionsPage extends ConsumerWidget {
         label: const Text('Nova recorrência'),
       ),
     );
+  }
+
+  Future<void> _generateNow(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final result = await ref
+          .read(recurringGenerationServiceProvider)
+          .generateDueEntries();
+      ref.invalidate(ledgerEntriesStreamProvider);
+      ref.invalidate(recurringTransactionsStreamProvider);
+      ref.invalidate(activeRecurringTransactionsStreamProvider);
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            result.createdEntries == 0
+                ? 'Nenhum lançamento pendente para gerar.'
+                : '${result.createdEntries} lançamento(s) gerado(s).',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Não foi possível gerar as recorrências: $error'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Future<void> _showOptions(

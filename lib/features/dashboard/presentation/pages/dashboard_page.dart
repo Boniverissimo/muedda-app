@@ -113,7 +113,58 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
             (first, second) => second.totalCents.compareTo(first.totalCents),
           );
 
-    // 👇 CONTINUA O CÓDIGO NORMAL
+    final pendingEntries = allEntries.where(
+      (entry) => !entry.isPaid && entry.type != 'transfer',
+    );
+    final pendingIncomeCents = pendingEntries
+        .where((entry) => entry.type == 'income')
+        .fold<int>(0, (total, entry) => total + entry.amountCents);
+    final pendingExpenseCents = pendingEntries
+        .where((entry) => entry.type == 'expense')
+        .fold<int>(0, (total, entry) => total + entry.amountCents);
+    final projectedBalanceCents =
+        balanceCents + pendingIncomeCents - pendingExpenseCents;
+
+    final today = DateTime(now.year, now.month, now.day);
+    final nextWeek = today.add(const Duration(days: 7));
+    final overdueEntries = pendingEntries.where((entry) {
+      final dueDate = entry.dueDate ?? entry.occurredAt;
+      return dueDate.isBefore(today);
+    }).toList();
+    final overdueCents = overdueEntries.fold<int>(
+      0,
+      (total, entry) => total + entry.amountCents,
+    );
+    final upcomingEntries =
+        pendingEntries.where((entry) {
+          final dueDate = entry.dueDate ?? entry.occurredAt;
+          return !dueDate.isBefore(today) && dueDate.isBefore(nextWeek);
+        }).toList()..sort((a, b) {
+          final aDate = a.dueDate ?? a.occurredAt;
+          final bDate = b.dueDate ?? b.occurredAt;
+          return aDate.compareTo(bDate);
+        });
+
+    final monthlyFlow = List.generate(6, (index) {
+      final monthDate = DateTime(now.year, now.month - (5 - index));
+      final monthEntries = allEntries.where((entry) {
+        return entry.isPaid &&
+            entry.occurredAt.year == monthDate.year &&
+            entry.occurredAt.month == monthDate.month;
+      });
+      final income = monthEntries
+          .where((entry) => entry.type == 'income')
+          .fold<int>(0, (total, entry) => total + entry.amountCents);
+      final expense = monthEntries
+          .where((entry) => entry.type == 'expense')
+          .fold<int>(0, (total, entry) => total + entry.amountCents);
+      return _MonthlyFlow(
+        month: monthDate,
+        incomeCents: income,
+        expenseCents: expense,
+      );
+    });
+
     final recentEntries = allEntries.take(3).toList();
 
     final isLoading =
@@ -189,11 +240,19 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   ),
                 ],
                 const SizedBox(height: AppSpacing.lg),
-                _buildBudgetCard(
+                _buildForecastSection(
                   context,
-                  expenseCents: expenseCents,
+                  projectedBalanceCents: projectedBalanceCents,
+                  pendingIncomeCents: pendingIncomeCents,
+                  pendingExpenseCents: pendingExpenseCents,
+                  overdueCents: overdueCents,
+                  overdueCount: overdueEntries.length,
                   isLoading: isLoading,
                 ),
+                const SizedBox(height: AppSpacing.lg),
+                _buildCashFlowSection(context, monthlyFlow: monthlyFlow),
+                const SizedBox(height: AppSpacing.lg),
+                _buildUpcomingSection(context, entries: upcomingEntries),
                 const SizedBox(height: AppSpacing.lg),
                 _buildQuickActions(context),
                 const SizedBox(height: AppSpacing.lg),
@@ -423,31 +482,100 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
     );
   }
 
-  Widget _buildBudgetCard(
+  Widget _buildForecastSection(
     BuildContext context, {
-    required int expenseCents,
+    required int projectedBalanceCents,
+    required int pendingIncomeCents,
+    required int pendingExpenseCents,
+    required int overdueCents,
+    required int overdueCount,
     required bool isLoading,
   }) {
-    const budgetCents = 1000000;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Visão prevista',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.push(AppRouter.payablesReceivables),
+              child: const Text('Ver vencimentos'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _DashboardCard(
+          child: Column(
+            children: [
+              _ForecastRow(
+                icon: Icons.account_balance_outlined,
+                title: 'Saldo previsto',
+                value: _buildDisplayedValue(
+                  amountCents: projectedBalanceCents,
+                  isLoading: isLoading,
+                ),
+                color: projectedBalanceCents >= 0
+                    ? AppColors.income
+                    : AppColors.expense,
+              ),
+              const Divider(height: AppSpacing.lg),
+              _ForecastRow(
+                icon: Icons.call_received_rounded,
+                title: 'A receber',
+                value: _buildDisplayedValue(
+                  amountCents: pendingIncomeCents,
+                  isLoading: isLoading,
+                ),
+                color: AppColors.income,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _ForecastRow(
+                icon: Icons.call_made_rounded,
+                title: 'A pagar',
+                value: _buildDisplayedValue(
+                  amountCents: pendingExpenseCents,
+                  isLoading: isLoading,
+                ),
+                color: AppColors.expense,
+              ),
+              if (overdueCount > 0) ...[
+                const SizedBox(height: AppSpacing.md),
+                _ForecastRow(
+                  icon: Icons.warning_amber_rounded,
+                  title:
+                      '$overdueCount vencimento${overdueCount == 1 ? '' : 's'} '
+                      'atrasado${overdueCount == 1 ? '' : 's'}',
+                  value: _buildDisplayedValue(
+                    amountCents: overdueCents,
+                    isLoading: isLoading,
+                  ),
+                  color: AppColors.warning,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
-    final calculatedProgress = budgetCents == 0
-        ? 0.0
-        : expenseCents / budgetCents;
-
-    final progress = calculatedProgress.clamp(0.0, 1.0).toDouble();
-    final percentage = (calculatedProgress * 100).round();
-
-    String budgetDescription;
-
-    if (isLoading) {
-      budgetDescription = 'Carregando...';
-    } else if (_showValues) {
-      budgetDescription =
-          '${_formatCurrency(expenseCents)} de '
-          '${_formatCurrency(budgetCents)}';
-    } else {
-      budgetDescription = 'R\$ •••• de R\$ ••••';
-    }
+  Widget _buildCashFlowSection(
+    BuildContext context, {
+    required List<_MonthlyFlow> monthlyFlow,
+  }) {
+    final maximum = monthlyFlow.fold<int>(0, (current, item) {
+      final itemMaximum = item.incomeCents > item.expenseCents
+          ? item.incomeCents
+          : item.expenseCents;
+      return itemMaximum > current ? itemMaximum : current;
+    });
 
     return _DashboardCard(
       child: Column(
@@ -457,59 +585,190 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
             children: [
               Expanded(
                 child: Text(
-                  'Orçamento mensal',
+                  'Fluxo dos últimos 6 meses',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              TextButton(onPressed: () {}, child: const Text('Ver detalhes')),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: isLoading ? 0 : progress,
-              minHeight: 10,
-              backgroundColor: AppColors.primaryLight,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Text(
-                isLoading ? 'Carregando...' : '$percentage% utilizado',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
+              const _ChartLegend(color: AppColors.income, label: 'Receitas'),
               const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  budgetDescription,
-                  textAlign: TextAlign.end,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                ),
-              ),
+              const _ChartLegend(color: AppColors.expense, label: 'Despesas'),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Limite provisório de R\$ 10.000,00',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+          const SizedBox(height: AppSpacing.lg),
+          SizedBox(
+            height: 150,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: monthlyFlow.map((item) {
+                final incomeFactor = maximum == 0
+                    ? 0.0
+                    : item.incomeCents / maximum;
+                final expenseFactor = maximum == 0
+                    ? 0.0
+                    : item.expenseCents / maximum;
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _FlowBar(
+                                factor: incomeFactor,
+                                color: AppColors.income,
+                                tooltip: _formatCurrency(item.incomeCents),
+                              ),
+                              const SizedBox(width: 3),
+                              _FlowBar(
+                                factor: expenseFactor,
+                                color: AppColors.expense,
+                                tooltip: _formatCurrency(item.expenseCents),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          _shortMonth(item.month.month),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.textSecondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildUpcomingSection(
+    BuildContext context, {
+    required List<LedgerEntry> entries,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Próximos 7 dias',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            TextButton(
+              onPressed: () => context.push(AppRouter.payablesReceivables),
+              child: const Text('Ver todos'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        if (entries.isEmpty)
+          _DashboardCard(
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.event_available_outlined,
+                  color: AppColors.income,
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Text(
+                    'Nenhum vencimento previsto para os próximos 7 dias.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          _DashboardCard(
+            child: Column(
+              children: entries.take(5).map((entry) {
+                final dueDate = entry.dueDate ?? entry.occurredAt;
+                final color = entry.type == 'income'
+                    ? AppColors.income
+                    : AppColors.expense;
+                final isLast = entry == entries.take(5).last;
+                return Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: color.withValues(alpha: 0.12),
+                        child: Icon(
+                          entry.type == 'income'
+                              ? Icons.south_west_rounded
+                              : Icons.north_east_rounded,
+                          color: color,
+                        ),
+                      ),
+                      title: Text(
+                        entry.description,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(_formatDueDate(dueDate)),
+                      trailing: Text(
+                        _showValues
+                            ? _formatCurrency(entry.amountCents)
+                            : 'R\$ ••••',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                    if (!isLast) const Divider(height: 1),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _formatDueDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final due = DateTime(date.year, date.month, date.day);
+    final difference = due.difference(today).inDays;
+    if (difference == 0) return 'Vence hoje';
+    if (difference == 1) return 'Vence amanhã';
+    return 'Vence em $difference dias • '
+        "${date.day.toString().padLeft(2, '0')}/"
+        "${date.month.toString().padLeft(2, '0')}";
+  }
+
+  String _shortMonth(int month) {
+    const months = [
+      'Jan',
+      'Fev',
+      'Mar',
+      'Abr',
+      'Mai',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Set',
+      'Out',
+      'Nov',
+      'Dez',
+    ];
+    return months[month - 1];
   }
 
   Widget _buildQuickActions(BuildContext context) {
@@ -531,7 +790,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 label: 'Contas',
                 color: AppColors.info,
                 backgroundColor: AppColors.infoLight,
-                onTap: () {},
+                onTap: () => context.push(AppRouter.accounts),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -541,17 +800,17 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 label: 'Cartões',
                 color: AppColors.chartPurple,
                 backgroundColor: const Color(0xFFF0EBFB),
-                onTap: () {},
+                onTap: () => context.push(AppRouter.creditCards),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: _QuickAction(
                 icon: Icons.flag_outlined,
-                label: 'Metas',
+                label: 'Vencimentos',
                 color: AppColors.warning,
                 backgroundColor: AppColors.warningLight,
-                onTap: () {},
+                onTap: () => context.push(AppRouter.payablesReceivables),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -561,9 +820,37 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 label: 'Categorias',
                 color: AppColors.secondary,
                 backgroundColor: AppColors.secondaryLight,
-                onTap: () {},
+                onTap: () => context.push(AppRouter.categories),
               ),
             ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Row(
+          children: [
+            Expanded(
+              child: _QuickAction(
+                icon: Icons.savings_outlined,
+                label: 'Orçamentos',
+                color: AppColors.income,
+                backgroundColor: AppColors.incomeLight,
+                onTap: () => context.push(AppRouter.budgets),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: _QuickAction(
+                icon: Icons.bar_chart_outlined,
+                label: 'Relatórios',
+                color: AppColors.primary,
+                backgroundColor: AppColors.primaryLight,
+                onTap: () => context.push(AppRouter.reports),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            const Expanded(child: SizedBox()),
+            const SizedBox(width: AppSpacing.sm),
+            const Expanded(child: SizedBox()),
           ],
         ),
       ],
@@ -587,7 +874,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                   ),
                 ),
               ),
-              TextButton(onPressed: () {}, child: const Text('Ver relatório')),
+              TextButton(
+                onPressed: () => context.push(AppRouter.reports),
+                child: const Text('Ver relatório'),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -616,7 +906,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            TextButton(onPressed: () {}, child: const Text('Ver todas')),
+            TextButton(
+              onPressed: () => context.push(AppRouter.payablesReceivables),
+              child: const Text('Ver todas'),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -837,6 +1130,119 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
           color: AppColors.expense,
         );
     }
+  }
+}
+
+class _MonthlyFlow {
+  const _MonthlyFlow({
+    required this.month,
+    required this.incomeCents,
+    required this.expenseCents,
+  });
+
+  final DateTime month;
+  final int incomeCents;
+  final int expenseCents;
+}
+
+class _ForecastRow extends StatelessWidget {
+  const _ForecastRow({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 21),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+          ),
+        ),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ChartLegend extends StatelessWidget {
+  const _ChartLegend({required this.color, required this.label});
+
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 4),
+        Text(label, style: Theme.of(context).textTheme.bodySmall),
+      ],
+    );
+  }
+}
+
+class _FlowBar extends StatelessWidget {
+  const _FlowBar({
+    required this.factor,
+    required this.color,
+    required this.tooltip,
+  });
+
+  final double factor;
+  final Color color;
+  final String tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          width: 10,
+          height: factor == 0 ? 3.0 : 110.0 * factor.clamp(0.0, 1.0).toDouble(),
+          decoration: BoxDecoration(
+            color: factor == 0 ? AppColors.divider : color,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+      ),
+    );
   }
 }
 

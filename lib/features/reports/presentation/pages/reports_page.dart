@@ -6,7 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/providers/accounts_providers.dart';
+import '../../../../core/providers/categories_providers.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
+import '../../../../core/services/report_export_service.dart';
 
 class ReportsPage extends ConsumerStatefulWidget {
   const ReportsPage({super.key});
@@ -17,6 +20,7 @@ class ReportsPage extends ConsumerStatefulWidget {
 
 class _ReportsPageState extends ConsumerState<ReportsPage> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
+  bool _isExporting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,11 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
 
     final balanceCents = incomeCents - expenseCents;
 
+    final accounts =
+        ref.watch(accountsStreamProvider).asData?.value ?? const <Account>[];
+    final categories =
+        ref.watch(categoriesStreamProvider).asData?.value ?? const <Category>[];
+
     final dailyData = _buildDailyData(entries);
     final largestExpenses = [
       ...expenseEntries,
@@ -96,6 +105,29 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
             incomeCents: incomeCents,
             expenseCents: expenseCents,
             balanceCents: balanceCents,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          _ReportSection(
+            title: 'Exportar relatório',
+            subtitle:
+                'Os arquivos serão salvos em Documentos/Meu App Financeiro/Relatórios.',
+            child: _ExportActions(
+              isExporting: _isExporting,
+              onExportPdf: () => _exportReport(
+                format: _ReportExportFormat.pdf,
+                entries: entries,
+                period: period,
+                accounts: accounts,
+                categories: categories,
+              ),
+              onExportCsv: () => _exportReport(
+                format: _ReportExportFormat.csv,
+                entries: entries,
+                period: period,
+                accounts: accounts,
+                categories: categories,
+              ),
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           _ReportSection(
@@ -153,6 +185,69 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
         ],
       ),
     );
+  }
+
+  Future<void> _exportReport({
+    required _ReportExportFormat format,
+    required List<LedgerEntry> entries,
+    required LedgerEntriesPeriod period,
+    required List<Account> accounts,
+    required List<Category> categories,
+  }) async {
+    if (_isExporting) {
+      return;
+    }
+
+    setState(() {
+      _isExporting = true;
+    });
+
+    try {
+      final service = ReportExportService();
+      final reportEnd = period.end.subtract(const Duration(microseconds: 1));
+
+      final file = switch (format) {
+        _ReportExportFormat.pdf => await service.exportPdf(
+          start: period.start,
+          end: reportEnd,
+          entries: entries,
+          accounts: accounts,
+          categories: categories,
+        ),
+        _ReportExportFormat.csv => await service.exportCsv(
+          start: period.start,
+          end: reportEnd,
+          entries: entries,
+          accounts: accounts,
+          categories: categories,
+        ),
+      };
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Relatório salvo em: ${file.path}'),
+          duration: const Duration(seconds: 6),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Não foi possível exportar: $error')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isExporting = false;
+        });
+      }
+    }
   }
 
   bool get _canGoToNextMonth {
@@ -222,6 +317,49 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
     result.sort((first, second) => first.day.compareTo(second.day));
 
     return result;
+  }
+}
+
+enum _ReportExportFormat { pdf, csv }
+
+class _ExportActions extends StatelessWidget {
+  const _ExportActions({
+    required this.isExporting,
+    required this.onExportPdf,
+    required this.onExportCsv,
+  });
+
+  final bool isExporting;
+  final VoidCallback onExportPdf;
+  final VoidCallback onExportCsv;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (isExporting) ...[
+          const LinearProgressIndicator(),
+          const SizedBox(height: AppSpacing.md),
+        ],
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            FilledButton.icon(
+              onPressed: isExporting ? null : onExportPdf,
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              label: const Text('Exportar PDF'),
+            ),
+            OutlinedButton.icon(
+              onPressed: isExporting ? null : onExportCsv,
+              icon: const Icon(Icons.description_outlined),
+              label: const Text('Exportar CSV'),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 

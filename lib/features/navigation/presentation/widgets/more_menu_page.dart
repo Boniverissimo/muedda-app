@@ -45,12 +45,32 @@ class MoreMenuPage extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 ListTile(
+                  leading: const Icon(Icons.event_note_outlined),
+                  title: const Text('Contas a pagar e receber'),
+                  subtitle: const Text('Acompanhe vencimentos e pendências'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/payables-receivables');
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
                   leading: const Icon(Icons.event_repeat_outlined),
                   title: const Text('Recorrências'),
                   subtitle: const Text('Gerencie lançamentos repetitivos'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     context.push('/recurring-transactions');
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.savings_outlined),
+                  title: const Text('Orçamentos'),
+                  subtitle: const Text('Defina limites mensais por categoria'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/budgets');
                   },
                 ),
               ],

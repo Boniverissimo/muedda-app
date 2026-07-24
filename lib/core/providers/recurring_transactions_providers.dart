@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/app_database.dart';
 import '../repositories/recurring_transactions_repository.dart';
+import '../services/recurring_generation_service.dart';
+import 'ledger_entries_providers.dart';
 import 'database_providers.dart';
 
 final recurringTransactionsRepositoryProvider =
@@ -27,3 +29,12 @@ final recurringTransactionByIdProvider =
       final repository = ref.watch(recurringTransactionsRepositoryProvider);
       return repository.getRecurringTransactionById(id);
     });
+
+final recurringGenerationServiceProvider = Provider<RecurringGenerationService>(
+  (ref) {
+    return RecurringGenerationService(
+      recurringRepository: ref.watch(recurringTransactionsRepositoryProvider),
+      ledgerRepository: ref.watch(ledgerEntriesRepositoryProvider),
+    );
+  },
+);
