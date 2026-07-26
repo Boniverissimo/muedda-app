@@ -7,7 +7,7 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
-import '../../../../core/providers/database_providers.dart';
+import '../../../../core/providers/accounts_providers.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_router.dart';
@@ -185,12 +185,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: null,
         onPressed: () {
-          context.push(AppRouter.newTransaction);
+          context.push(AppRouter.smartEntry);
         },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('Nova transação'),
+        label: const Text('Registrar'),
       ),
       body: SafeArea(
         child: RefreshIndicator(

@@ -308,8 +308,9 @@ class _RecurringTransactionFormDialogState
       firstDate: _startDate,
       lastDate: DateTime(2100),
     );
-    if (selected != null)
+    if (selected != null) {
       setState(() => _endDate = DateUtils.dateOnly(selected));
+    }
   }
 
   Future<void> _save() async {

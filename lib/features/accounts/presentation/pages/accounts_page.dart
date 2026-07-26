@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
-import '../../../../core/providers/database_providers.dart';
+import '../../../../core/providers/accounts_providers.dart';
 
 class AccountsPage extends ConsumerWidget {
   const AccountsPage({super.key});

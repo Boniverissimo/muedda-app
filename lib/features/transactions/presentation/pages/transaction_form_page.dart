@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/categories_providers.dart';
-import '../../../../core/providers/database_providers.dart';
+import '../../../../core/providers/accounts_providers.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
 import '../../../../core/utils/category_visuals.dart';
 

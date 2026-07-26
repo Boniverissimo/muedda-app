@@ -10,6 +10,7 @@ import '../../features/credit_cards/presentation/pages/credit_cards_page.dart';
 import '../../features/navigation/presentation/pages/main_navigation_page.dart';
 import '../../features/payables_receivables/presentation/pages/payables_receivables_page.dart';
 import '../../features/reports/presentation/pages/reports_page.dart';
+import '../../features/smart_entry/presentation/pages/smart_entry_page.dart';
 import '../../features/recurring_transactions/presentation/pages/recurring_transactions_page.dart';
 import '../../features/transactions/presentation/pages/new_transaction_page.dart';
 
@@ -24,6 +25,7 @@ abstract final class AppRouter {
   static const String payablesReceivables = '/payables-receivables';
   static const String recurringTransactions = '/recurring-transactions';
   static const String newTransaction = '/transactions/new';
+  static const String smartEntry = '/transactions/smart-entry';
 
   static final GoRouter router = GoRouter(
     initialLocation: home,
@@ -83,6 +85,12 @@ abstract final class AppRouter {
         path: recurringTransactions,
         builder: (context, state) {
           return const RecurringTransactionsPage();
+        },
+      ),
+      GoRoute(
+        path: smartEntry,
+        builder: (context, state) {
+          return const SmartEntryPage();
         },
       ),
       GoRoute(

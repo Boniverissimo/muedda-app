@@ -1,0 +1,20 @@
+CORREÇÃO DO GRADLE PARA 8 GB DE RAM
+
+1. Extraia este ZIP dentro da pasta raiz do projeto:
+   C:\Users\Financeiro\Desktop\meu_app
+
+2. Confirme a substituição do arquivo:
+   android\gradle.properties
+
+3. Feche o Android Studio e outros programas pesados.
+
+4. No PowerShell, na pasta do projeto, execute:
+   cd android
+   .\gradlew.bat --stop
+   cd ..
+   flutter clean
+   flutter pub get
+   flutter build apk --release
+
+O APK será gerado em:
+build\app\outputs\flutter-apk\app-release.apk

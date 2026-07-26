@@ -14,10 +14,18 @@ class NewTransactionPage extends ConsumerStatefulWidget {
     super.key,
     this.initialType = 'expense',
     this.initialCreditCardId,
+    this.initialDescription,
+    this.initialAmountCents,
+    this.initialOccurredAt,
+    this.initialCategoryId,
   });
 
   final String initialType;
   final int? initialCreditCardId;
+  final String? initialDescription;
+  final int? initialAmountCents;
+  final DateTime? initialOccurredAt;
+  final int? initialCategoryId;
 
   @override
   ConsumerState<NewTransactionPage> createState() => _NewTransactionPageState();
@@ -53,6 +61,20 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
     super.initState();
     _transactionType = widget.initialType;
     _selectedCreditCardId = widget.initialCreditCardId;
+    _selectedCategoryId = widget.initialCategoryId;
+    _occurredAt = widget.initialOccurredAt ?? DateTime.now();
+
+    if (widget.initialDescription != null) {
+      _descriptionController.text = widget.initialDescription!;
+    }
+    if (widget.initialAmountCents != null) {
+      _amountController.text = _formatInitialAmount(widget.initialAmountCents!);
+    }
+  }
+
+  String _formatInitialAmount(int amountCents) {
+    final value = amountCents / 100;
+    return value.toStringAsFixed(2).replaceAll('.', ',');
   }
 
   @override
@@ -960,7 +982,7 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
         ),
       );
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     } catch (error) {
       if (!mounted) {
         return;
