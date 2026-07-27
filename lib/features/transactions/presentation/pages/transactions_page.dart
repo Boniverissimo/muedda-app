@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_spacing.dart';
+import '../../../../app/theme/muedda_theme_colors.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
 import 'transaction_form_page.dart';
@@ -32,22 +33,43 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     final entriesAsync = ref.watch(ledgerEntriesStreamProvider);
 
     return Scaffold(
+      backgroundColor: context.mueddaColors.canvas,
       appBar: AppBar(
-        title: const Text('Lançamentos'),
+        toolbarHeight: 88,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: context.mueddaColors.canvas,
+        titleSpacing: AppSpacing.lg,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Lançamentos',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: context.mueddaColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              'Acompanhe todas as movimentações',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: context.mueddaColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
         actions: [
-          IconButton(
-            tooltip: 'Limpar filtros',
-            onPressed: _hasActiveFilters ? _clearFilters : null,
-            icon: const Icon(Icons.filter_alt_off_outlined),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.md),
+            child: IconButton.filledTonal(
+              tooltip: 'Limpar filtros',
+              onPressed: _hasActiveFilters ? _clearFilters : null,
+              icon: const Icon(Icons.filter_alt_off_outlined),
+            ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openNewTransaction,
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text('Nova transação'),
       ),
       body: entriesAsync.when(
         data: _buildContent,
@@ -145,7 +167,9 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
       },
       decoration: InputDecoration(
         hintText: 'Pesquisar lançamento',
-        prefixIcon: const Icon(Icons.search),
+        filled: true,
+        fillColor: context.mueddaColors.surface,
+        prefixIcon: const Icon(Icons.search_rounded),
         suffixIcon: _searchText.isEmpty
             ? null
             : IconButton(
@@ -159,7 +183,14 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
                 },
                 icon: const Icon(Icons.close),
               ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: context.mueddaColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
       ),
     );
   }
@@ -168,6 +199,12 @@ class _TransactionsPageState extends ConsumerState<TransactionsPage> {
     return SizedBox(
       width: double.infinity,
       child: SegmentedButton<String>(
+        style: ButtonStyle(
+          visualDensity: VisualDensity.compact,
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+        ),
         segments: const [
           ButtonSegment<String>(value: 'all', label: Text('Todos')),
           ButtonSegment<String>(value: 'income', label: Text('Receitas')),
@@ -476,9 +513,9 @@ class _TransactionsSummary extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: context.mueddaColors.surface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.mueddaColors.border),
           ),
           child: Row(
             children: [
@@ -494,7 +531,7 @@ class _TransactionsSummary extends StatelessWidget {
                     Text(
                       'Resultado filtrado',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.mueddaColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -514,7 +551,7 @@ class _TransactionsSummary extends StatelessWidget {
                 '$entriesCount ${entriesCount == 1 ? 'lançamento' : 'lançamentos'}',
                 style: Theme.of(
                   context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                ).textTheme.bodySmall?.copyWith(color: context.mueddaColors.textSecondary),
               ),
             ],
           ),
@@ -559,9 +596,9 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.mueddaColors.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.mueddaColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,7 +609,7 @@ class _SummaryCard extends StatelessWidget {
             title,
             style: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            ).textTheme.bodyMedium?.copyWith(color: context.mueddaColors.textSecondary),
           ),
           const SizedBox(height: 2),
           Text(
@@ -737,7 +774,7 @@ class _TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
+      color: context.mueddaColors.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         onTap: onTap,
@@ -745,8 +782,15 @@ class _TransactionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: context.mueddaColors.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.035),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -778,15 +822,15 @@ class _TransactionCard extends StatelessWidget {
                         Text(
                           _typeLabel(),
                           style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary),
+                              ?.copyWith(color: context.mueddaColors.textSecondary),
                         ),
                         const SizedBox(width: 6),
                         Container(
                           width: 4,
                           height: 4,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.textSecondary,
+                            color: context.mueddaColors.textSecondary,
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -795,7 +839,7 @@ class _TransactionCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: entry.isPaid
-                                    ? AppColors.textSecondary
+                                    ? context.mueddaColors.textSecondary
                                     : AppColors.expense,
                                 fontWeight: entry.isPaid
                                     ? FontWeight.normal
@@ -905,7 +949,7 @@ class _FilteredEmptyView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
-              ).textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+              ).textTheme.bodyLarge?.copyWith(color: context.mueddaColors.textSecondary),
             ),
             if (hasFilters) ...[
               const SizedBox(height: AppSpacing.lg),

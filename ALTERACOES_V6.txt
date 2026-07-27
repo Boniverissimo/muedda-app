@@ -1,0 +1,10 @@
+V6 — CONSOLIDAÇÃO E ACABAMENTO
+
+- Componentes compartilhados adicionais para telas financeiras.
+- Navegador mensal com locale pt-BR.
+- Controles segmentados responsivos e acessíveis.
+- Bottom sheet e dialog padronizados.
+- Cards de ação e progresso.
+- Botões de ícone consistentes.
+- Controle visual para ocultar/exibir saldos.
+- Scripts de instalação, reversão e diagnóstico atualizados.

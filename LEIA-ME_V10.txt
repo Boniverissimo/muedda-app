@@ -1,0 +1,45 @@
+MUEDDA — DESIGN COMPLETO V10
+
+Este pacote aplica toda a camada visual disponível no ZIP original enviado.
+
+TELAS/ÁREAS INCLUÍDAS
+1. Navegação principal responsiva
+2. Menu Mais
+3. Dashboard
+4. Lançamentos
+5. Novo lançamento
+6. Edição de lançamento
+7. Contas
+8. Cartões de crédito
+9. Compras e fatura do cartão
+10. Orçamentos
+11. Categorias
+12. Relatórios
+13. Contas a pagar e receber
+14. Lançamentos recorrentes
+15. Entrada inteligente
+
+TAMBÉM INCLUÍDO
+- Tema claro e escuro
+- Design System compartilhado
+- Componentes de cards, botões, campos, filtros, estados vazios e erros
+- Layout responsivo para celular, tablet, Web e desktop
+- Formatação monetária pt-BR
+- Instalador com backup automático
+- Script de reversão
+
+COMO APLICAR
+1. Extraia o ZIP.
+2. Dê dois cliques em APLICAR_V10.bat.
+3. O projeto padrão é C:\Users\Financeiro\Desktop\meu_app.
+4. Ao finalizar, abra o PowerShell e execute:
+
+   cd C:\Users\Financeiro\Desktop\meu_app
+   flutter run
+
+RELATÓRIOS
+- muedda_analyze_v10.txt
+- muedda_install_v10.txt
+
+IMPORTANTE
+Este pacote preserva Riverpod, Drift, providers, DAOs, repositórios e models já existentes no projeto. A validação definitiva depende do flutter analyze executado no projeto completo.

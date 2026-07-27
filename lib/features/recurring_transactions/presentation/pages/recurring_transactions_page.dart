@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_spacing.dart';
+
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
 import '../../../../core/providers/recurring_transactions_providers.dart';
@@ -15,8 +19,12 @@ class RecurringTransactionsPage extends ConsumerWidget {
     final recurringAsync = ref.watch(recurringTransactionsStreamProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Recorrências'),
+        leading: const MueddaBackButton(),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        title: const Text('Recorrências', style: TextStyle(fontWeight: FontWeight.w800)),
         actions: [
           IconButton(
             tooltip: 'Gerar lançamentos pendentes',
@@ -39,7 +47,9 @@ class RecurringTransactionsPage extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 112,
+            ),
             itemCount: items.length,
             separatorBuilder: (_, _) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
@@ -53,6 +63,8 @@ class RecurringTransactionsPage extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textOnPrimary,
         heroTag: 'recurring_transactions_fab',
         onPressed: () =>
             showRecurringTransactionFormDialog(context: context, ref: ref),

@@ -1,0 +1,27 @@
+MUEDDA — PACOTE AMPLO FIGMA V6
+
+CONTEÚDO
+- Todo o conteúdo visual e funcional incluído na V5.
+- 9 novos componentes compartilhados para reduzir duplicação:
+  ActionCard, BalanceVisibility, BottomSheet, IconButton, ListTile,
+  MonthNavigator, ProgressCard, SegmentedControl e ResponsiveDialog.
+- Melhorias de acessibilidade com Semantics e tooltips.
+- Navegação mensal padronizada em pt-BR.
+- Instalador com backup, diagnóstico e reversão.
+
+APLICAÇÃO
+1. Faça commit ou cópia de segurança do projeto.
+2. Abra o PowerShell na raiz do projeto Flutter.
+3. Execute:
+   Set-ExecutionPolicy -Scope Process Bypass
+   & "CAMINHO_DO_PACOTE\INSTALAR_V6.ps1" -ProjectPath .
+
+DIAGNÓSTICO
+& "CAMINHO_DO_PACOTE\DIAGNOSTICAR_V6.ps1" -ProjectPath .
+
+REVERSÃO
+& "CAMINHO_DO_PACOTE\REVERTER_V6.ps1" -ProjectPath . -BackupPath ".\backup_muedda_v6_DATA_HORA"
+
+OBSERVAÇÃO
+O pacote preserva providers, DAOs, repositórios, banco Drift e regras de negócio.
+A validação integral deve ser executada no projeto completo.

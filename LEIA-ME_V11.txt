@@ -1,0 +1,27 @@
+MUEDDA — DESIGN FINAL V11
+
+Esta versão corrige especificamente:
+- ligação automática do tema claro e escuro no MaterialApp.router;
+- superfícies, textos, bordas e filtros da tela de Lançamentos no modo escuro;
+- botão Voltar seguro para Navigator e GoRouter;
+- retorno para a raiz quando uma tela foi aberta sem histórico de navegação;
+- tela de Nova transação e formulários;
+- páginas de Contas, Categorias, Orçamentos, Cartões, Vencimentos, Recorrências e Entrada inteligente;
+- SegmentedButton, TabBar, Dropdown, ListTile, BottomSheet e Dialog no modo escuro.
+
+INSTALAÇÃO MAIS SIMPLES
+1. Extraia este ZIP.
+2. Dê dois cliques em APLICAR_V11.bat.
+3. Aguarde o flutter analyze terminar.
+4. Execute no projeto: flutter run
+
+PROJETO PADRÃO
+C:\Users\Financeiro\Desktop\meu_app
+
+O instalador cria um backup completo antes de alterar o projeto.
+O relatório fica em:
+C:\Users\Financeiro\Desktop\meu_app\muedda_analyze_v11.txt
+
+TESTE DO TEMA ESCURO
+Altere o Windows/Android para o tema escuro e reinicie o aplicativo.
+A V11 usa ThemeMode.system.

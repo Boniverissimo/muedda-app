@@ -1,0 +1,23 @@
+MUEDDA - PACOTE CONSOLIDADO FIGMA V1
+
+Este pacote reúne, em uma única atualização:
+- Navegação principal personalizada
+- Bottom bar e FAB central
+- Dashboard Figma V1
+- Lançamentos Figma V1
+- Contas Figma V1
+- Cartões de crédito e compras Figma V1
+- Orçamentos Figma V1
+
+COMO APLICAR
+1. Faça backup ou commit do projeto atual.
+2. Extraia este ZIP.
+3. Copie a pasta "features" para dentro de "lib", substituindo os arquivos existentes.
+4. Execute:
+
+   dart format lib
+   flutter analyze
+   flutter run
+
+O pacote preserva a arquitetura existente: Riverpod, Drift, providers, DAOs,
+repositórios, models, rotas e regras financeiras.

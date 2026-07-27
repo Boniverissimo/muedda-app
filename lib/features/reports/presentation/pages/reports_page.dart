@@ -32,7 +32,12 @@ class _ReportsPageState extends ConsumerState<ReportsPage> {
     final entriesAsync = ref.watch(entriesByPeriodStreamProvider(period));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Relatórios')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        title: const Text('Relatórios', style: TextStyle(fontWeight: FontWeight.w800)),
+      ),
       body: entriesAsync.when(
         data: (entries) {
           return _buildReport(entries, period);

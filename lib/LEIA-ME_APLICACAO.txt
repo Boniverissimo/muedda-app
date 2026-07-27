@@ -1,0 +1,39 @@
+MUEDDA — PACOTE FIGMA V2 CONSOLIDADO
+=====================================
+
+Este pacote substitui a camada features completa e consolida as alterações visuais
+em uma única aplicação.
+
+ÁREAS INCLUÍDAS
+- Navegação principal, Bottom Bar e FAB central
+- Dashboard e componentes
+- Lançamentos e formulários
+- Contas
+- Cartões de crédito e compras
+- Orçamentos
+- Categorias
+- Relatórios
+- Contas a pagar e receber
+- Lançamentos recorrentes
+- Entrada inteligente
+- Menu Mais reorganizado
+
+COMO APLICAR
+1. Faça um commit ou cópia de segurança do projeto atual.
+2. Extraia este ZIP.
+3. Copie a pasta "features" para "lib/features".
+4. Autorize a substituição dos arquivos existentes.
+5. Execute no terminal, na raiz do projeto:
+
+   dart format lib/features
+   flutter clean
+   flutter pub get
+   flutter analyze
+   flutter run
+
+IMPORTANTE
+- Riverpod, Drift, providers, repositórios e models foram preservados.
+- O pacote depende dos arquivos existentes em lib/app/theme:
+  app_colors.dart e app_spacing.dart.
+- Nenhuma dependência nova foi adicionada ao pubspec.yaml.
+- Caso o flutter analyze apresente erro, envie a saída completa e o arquivo citado.

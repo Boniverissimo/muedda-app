@@ -1,0 +1,20 @@
+MUEDDA — PACOTE AMPLO FIGMA V4
+
+Conteúdo:
+- Todo o conteúdo da V3.
+- Tema global ampliado para chips, SnackBars, switches, navegação, progresso e tooltips.
+- Componentes reutilizáveis para botão, campo, valor monetário, filtro, formulário, confirmação, skeleton e responsividade.
+- Formatação centralizada em pt-BR para moeda e datas.
+- Validadores compartilhados para campos obrigatórios, valores e dias do mês.
+- Motion tokens para animações consistentes.
+- Instalador com backup, formatação, pub get e análise.
+- Script de reversão e auditoria de rotas.
+
+APLICAÇÃO:
+1. Extraia o ZIP.
+2. Abra o PowerShell na raiz do projeto.
+3. Execute:
+   Set-ExecutionPolicy -Scope Process Bypass
+   & "CAMINHO_DO_PACOTE\INSTALAR_V4.ps1" -ProjectPath .
+
+Em caso de erro, use REVERTER_V4.ps1 informando a pasta de backup criada.

@@ -1,0 +1,23 @@
+MUEDDA — DESIGN FINAL V7
+
+Esta versão consolida o design das V1–V6 e fecha os principais pontos estruturais:
+- navegação inferior para celular;
+- NavigationRail para tablet/web/desktop;
+- FAB central no celular e ação dedicada no desktop;
+- ThemeExtension com superfícies e textos compatíveis com tema escuro;
+- tema global Material 3;
+- componentes, formulários, filtros, estados, relatórios e telas já convertidas;
+- auditoria visual para localizar cores fixas ainda existentes.
+
+APLICAÇÃO
+1. Faça commit ou backup do projeto.
+2. Abra o PowerShell na raiz do projeto.
+3. Execute:
+   Set-ExecutionPolicy -Scope Process Bypass
+   & "CAMINHO_DO_PACOTE\INSTALAR_V7_FINAL.ps1" -ProjectPath .
+
+AUDITORIA VISUAL
+& "CAMINHO_DO_PACOTE\AUDITAR_DESIGN_V7.ps1" -ProjectPath .
+
+A validação final depende dos arquivos externos ao pacote: router, providers, DAOs,
+repositórios, banco Drift e pubspec.yaml.

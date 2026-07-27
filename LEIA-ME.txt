@@ -1,20 +1,34 @@
-CORREÇÃO DO GRADLE PARA 8 GB DE RAM
+MUEDDA — DESIGN FINAL V8
 
-1. Extraia este ZIP dentro da pasta raiz do projeto:
+MODO MAIS FÁCIL
+1. Extraia este ZIP.
+2. Dê dois cliques em APLICAR_V8.bat.
+3. O instalador usará automaticamente:
    C:\Users\Financeiro\Desktop\meu_app
+4. Ao terminar, abra o PowerShell na pasta do projeto e execute:
+   flutter run
 
-2. Confirme a substituição do arquivo:
-   android\gradle.properties
+MODO POWERSHELL
+Na pasta extraída, execute:
 
-3. Feche o Android Studio e outros programas pesados.
+powershell -ExecutionPolicy Bypass -File .\INSTALAR_V8_FINAL.ps1 -ProjectPath "C:\Users\Financeiro\Desktop\meu_app"
 
-4. No PowerShell, na pasta do projeto, execute:
-   cd android
-   .\gradlew.bat --stop
-   cd ..
-   flutter clean
-   flutter pub get
-   flutter build apk --release
+O instalador cria um backup da pasta lib antes de alterar o projeto.
+O resultado do flutter analyze fica em muedda_analyze_v8.txt na raiz do projeto.
 
-O APK será gerado em:
-build\app\outputs\flutter-apk\app-release.apk
+CONTEÚDO
+- Tema claro e escuro
+- Design System compartilhado
+- Navegação móvel e desktop
+- Dashboard
+- Lançamentos
+- Contas
+- Cartões e compras
+- Orçamentos
+- Categorias
+- Relatórios
+- Contas a pagar e receber
+- Lançamentos recorrentes
+- Entrada inteligente
+- Menu Mais
+- Componentes responsivos, estados vazios, erros, filtros e formulários

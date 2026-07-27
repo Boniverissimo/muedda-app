@@ -1,0 +1,22 @@
+MUEDDA — PACOTE AMPLO FIGMA V5
+
+Esta versão mantém todo o conteúdo da V4 e adiciona:
+- shell responsivo para páginas;
+- grid adaptativo para celular, tablet e web;
+- campo de pesquisa reutilizável;
+- card de indicadores financeiros;
+- mensagens padronizadas de sucesso, erro e informação;
+- fechamento automático de teclado;
+- arquivo barrel muedda_ui.dart para simplificar imports;
+- auditoria completa com format, analyze, test e build web.
+
+INSTALAÇÃO
+1. Faça commit ou backup do projeto.
+2. Na raiz do projeto, execute:
+   Set-ExecutionPolicy -Scope Process Bypass
+   & "CAMINHO_DO_PACOTE\INSTALAR_V5.ps1" -ProjectPath .
+
+VALIDAÇÃO COMPLETA
+& "CAMINHO_DO_PACOTE\AUDITAR_PROJETO.ps1" -ProjectPath .
+
+Observação: o pacote preserva a lógica do projeto. A validação final depende dos providers, DAOs, repositórios, rotas e pubspec do seu projeto completo.

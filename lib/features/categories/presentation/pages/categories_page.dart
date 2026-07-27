@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_spacing.dart';
+
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/categories_providers.dart';
 import '../../../../core/utils/category_visuals.dart';
@@ -14,11 +18,20 @@ class CategoriesPage extends ConsumerWidget {
 
     return initialization.when(
       loading: () {
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        return const Scaffold(
+          backgroundColor: AppColors.background,
+          body: Center(child: CircularProgressIndicator()),
+        );
       },
       error: (error, stackTrace) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Categorias')),
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+        leading: const MueddaBackButton(),
+            backgroundColor: AppColors.background,
+            elevation: 0,
+            title: const Text('Categorias'),
+          ),
           body: Center(child: Text('Erro ao preparar categorias: $error')),
         );
       },
@@ -43,9 +56,17 @@ class _CategoriesContent extends ConsumerWidget {
       child: Builder(
         builder: (context) {
           return Scaffold(
+            backgroundColor: AppColors.background,
             appBar: AppBar(
-              title: const Text('Categorias'),
+              backgroundColor: AppColors.background,
+              elevation: 0,
+              title: const Text('Categorias', style: TextStyle(fontWeight: FontWeight.w800)),
               bottom: const TabBar(
+                dividerColor: Colors.transparent,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: AppColors.primary,
+                labelColor: AppColors.primary,
+                unselectedLabelColor: AppColors.textSecondary,
                 tabs: [
                   Tab(icon: Icon(Icons.arrow_downward), text: 'Despesas'),
                   Tab(icon: Icon(Icons.arrow_upward), text: 'Receitas'),
@@ -80,6 +101,8 @@ class _CategoriesContent extends ConsumerWidget {
             ),
             floatingActionButton: FloatingActionButton.extended(
               heroTag: null,
+              backgroundColor: AppColors.primary,
+              foregroundColor: AppColors.textOnPrimary,
               onPressed: () {
                 final tabIndex = DefaultTabController.of(context).index;
 
@@ -552,7 +575,7 @@ class _CategoriesList extends StatelessWidget {
         }
 
         return ListView.separated(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 112),
           itemCount: categories.length,
           separatorBuilder: (context, index) {
             return const SizedBox(height: 8);

@@ -1,0 +1,23 @@
+MUEDDA — DESIGN DE CONCLUSÃO V9
+
+FORMA MAIS SIMPLES
+1. Extraia este ZIP.
+2. Abra a pasta extraída.
+3. Dê dois cliques em APLICAR_V9.bat.
+4. Ao terminar, abra o PowerShell no projeto e execute: flutter run
+
+PROJETO PADRÃO
+C:\Users\Financeiro\Desktop\meu_app
+
+INSTALAÇÃO MANUAL
+powershell -ExecutionPolicy Bypass -File .\INSTALAR_V9_FINAL.ps1 -ProjectPath "C:\Users\Financeiro\Desktop\meu_app"
+
+INSTALAÇÃO COM REVERSÃO AUTOMÁTICA SE A ANÁLISE FALHAR
+powershell -ExecutionPolicy Bypass -File .\INSTALAR_V9_FINAL.ps1 -ProjectPath "C:\Users\Financeiro\Desktop\meu_app" -ReverterSeFalhar
+
+ARQUIVOS GERADOS NO PROJETO
+- backup_muedda_design_v9_DATA_HORA
+- muedda_analyze_v9.txt
+- muedda_install_v9.txt
+
+O pacote preserva Riverpod, Drift, providers, DAOs, repositórios e models existentes; substitui e amplia a camada visual incluída.

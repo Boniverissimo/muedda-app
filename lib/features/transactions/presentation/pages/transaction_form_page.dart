@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/categories_providers.dart';
 import '../../../../core/providers/accounts_providers.dart';
@@ -90,6 +91,7 @@ class _TransactionFormPageState extends ConsumerState<TransactionFormPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: const MueddaBackButton(),
         title: Text(widget.isEditing ? 'Editar transação' : 'Nova transação'),
       ),
       body: accountsAsync.when(

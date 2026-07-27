@@ -1,0 +1,9 @@
+SPRINT V3
+
+1. Consolida a camada visual anterior.
+2. Adiciona Design System compartilhado.
+3. Adiciona tema claro e escuro.
+4. Mantem compatibilidade com AppColors e AppSpacing usados nas telas.
+5. Padroniza cards, cabecalhos, estados vazios, carregamento, erro e badges.
+6. Inclui aplicador PowerShell com backup automatico.
+7. Inclui validacao automatizada.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/categories_providers.dart';
 import '../../../../app/router/app_router.dart';
@@ -44,7 +45,14 @@ class _CreditCardPurchasesPageState
     };
 
     return Scaffold(
-      appBar: AppBar(title: Text(creditCard.name)),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        leading: const MueddaBackButton(),
+        title: Text(creditCard.name),
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(
@@ -100,7 +108,7 @@ class _CreditCardPurchasesPageState
               );
             },
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 104),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
               children: [
                 _LimitSummary(
                   limitCents: creditCard.limitCents,
@@ -375,9 +383,16 @@ class _InvoiceMonthSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.45),
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Row(
           children: [
             IconButton(
@@ -450,9 +465,23 @@ class _InvoiceSummary extends StatelessWidget {
         ? 0.0
         : (paidCents / totalCents).clamp(0.0, 1.0);
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.42),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -533,22 +562,44 @@ class _LimitSummary extends StatelessWidget {
         ? 0.0
         : (pendingCents / limitCents).clamp(0.0, 1.0);
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.76),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.20),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               'Limite disponível',
-              style: Theme.of(context).textTheme.labelLarge,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.78),
+              ),
             ),
             const SizedBox(height: 6),
             Text(
               _formatMoney(availableCents),
               style: Theme.of(
                 context,
-              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+              ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w800,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
             const SizedBox(height: 16),
             LinearProgressIndicator(value: usage),
@@ -556,8 +607,14 @@ class _LimitSummary extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Usado: ${_formatMoney(pendingCents)}'),
-                Text('Limite: ${_formatMoney(limitCents)}'),
+                Text(
+                  'Usado: ${_formatMoney(pendingCents)}',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ),
+                Text(
+                  'Limite: ${_formatMoney(limitCents)}',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ),
               ],
             ),
           ],
@@ -581,8 +638,16 @@ class _PurchaseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dueDate = entry.dueDate ?? entry.occurredAt;
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.38),
+        ),
+      ),
       child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onTap: onTap,
         leading: CircleAvatar(
           child: Icon(entry.isPaid ? Icons.check : Icons.schedule),

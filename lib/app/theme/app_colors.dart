@@ -1,47 +1,38 @@
 import 'package:flutter/material.dart';
 
+/// Paleta central do Muedda.
+/// Mantém os nomes usados nas telas antigas e novas para evitar quebras.
 abstract final class AppColors {
-  // Marca
-  static const Color primary = Color(0xFF1F6E5A);
-  static const Color primaryDark = Color(0xFF175344);
-  static const Color primaryLight = Color(0xFFE2F1EC);
+  static const Color primary = Color(0xFF6857E5);
+  static const Color primaryDark = Color(0xFF4E3CC7);
+  static const Color primaryLight = Color(0xFFEDEAFF);
+  static const Color secondary = Color(0xFF8D7DF2);
 
-  static const Color secondary = Color(0xFF36A783);
-  static const Color secondaryLight = Color(0xFFDDF5ED);
+  static const Color background = Color(0xFFF7F7FB);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color surfaceVariant = Color(0xFFF1F1F7);
+  static const Color border = Color(0xFFE5E5EE);
+  static const Color divider = Color(0xFFECECF2);
 
-  // Estrutura
-  static const Color background = Color(0xFFF4F7F6);
-  static const Color surface = Colors.white;
-  static const Color surfaceVariant = Color(0xFFF8FAF9);
+  static const Color textPrimary = Color(0xFF20202A);
+  static const Color textSecondary = Color(0xFF666675);
+  static const Color textTertiary = Color(0xFF9797A5);
+  static const Color textOnPrimary = Color(0xFFFFFFFF);
+  static const Color disabled = Color(0xFFB9B9C4);
 
-  // Textos
-  static const Color textPrimary = Color(0xFF17211E);
-  static const Color textSecondary = Color(0xFF66736F);
-  static const Color textTertiary = Color(0xFF8B9692);
-  static const Color textOnPrimary = Colors.white;
+  static const Color income = Color(0xFF1FAD79);
+  static const Color incomeLight = Color(0xFFE4F7F0);
+  static const Color expense = Color(0xFFE65C66);
+  static const Color expenseLight = Color(0xFFFDEBED);
+  static const Color warning = Color(0xFFE5A229);
+  static const Color warningLight = Color(0xFFFFF5DD);
+  static const Color info = Color(0xFF4285D4);
+  static const Color infoLight = Color(0xFFE7F1FC);
 
-  // Financeiro
-  static const Color income = Color(0xFF1B8A5A);
-  static const Color incomeLight = Color(0xFFE1F3EA);
-
-  static const Color expense = Color(0xFFD94C4C);
-  static const Color expenseLight = Color(0xFFFCE8E8);
-
-  static const Color warning = Color(0xFFF2A93B);
-  static const Color warningLight = Color(0xFFFFF3DC);
-
-  static const Color info = Color(0xFF3D7EDB);
-  static const Color infoLight = Color(0xFFE6EFFC);
-
-  // Componentes
-  static const Color border = Color(0xFFE0E7E4);
-  static const Color divider = Color(0xFFEDF1EF);
-  static const Color disabled = Color(0xFFB8C1BE);
-
-  // Gráficos
-  static const Color chartGreen = Color(0xFF36A783);
-  static const Color chartBlue = Color(0xFF4B82D0);
-  static const Color chartOrange = Color(0xFFF2A93B);
-  static const Color chartPurple = Color(0xFF8B6FD6);
-  static const Color chartRed = Color(0xFFD94C4C);
+  static const Color darkBackground = Color(0xFF111116);
+  static const Color darkSurface = Color(0xFF1B1B22);
+  static const Color darkSurfaceVariant = Color(0xFF25252E);
+  static const Color darkBorder = Color(0xFF30303B);
+  static const Color darkTextPrimary = Color(0xFFF7F7FA);
+  static const Color darkTextSecondary = Color(0xFFB6B6C1);
 }

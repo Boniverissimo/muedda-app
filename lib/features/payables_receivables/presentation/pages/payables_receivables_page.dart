@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_spacing.dart';
+
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/ledger_entries_providers.dart';
 import '../../../transactions/presentation/pages/transaction_form_page.dart';
@@ -28,8 +32,19 @@ class _PayablesReceivablesPageState
     final entriesAsync = ref.watch(ledgerEntriesStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Contas a pagar e receber')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        leading: const MueddaBackButton(),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        title: const Text(
+          'Contas a pagar e receber',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textOnPrimary,
         onPressed: _openNewEntry,
         icon: const Icon(Icons.add),
         label: const Text('Novo lançamento'),
@@ -97,7 +112,9 @@ class _PayablesReceivablesPageState
       onRefresh: () async => ref.invalidate(ledgerEntriesStreamProvider),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 112,
+        ),
         children: [
           _SummaryGrid(
             pendingPayables: pendingPayables,

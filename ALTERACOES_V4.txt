@@ -1,0 +1,8 @@
+V4 — ACABAMENTO E BASE DE PRODUTO
+- 12 novos arquivos de UI compartilhada.
+- Formatação monetária pt-BR centralizada.
+- Tema Material 3 ampliado.
+- Responsividade para tablet, web e desktop.
+- Melhor acessibilidade para leitura de valores.
+- Instalação com backup e reversão.
+- Auditoria de rotas para detectar caminhos não registrados.

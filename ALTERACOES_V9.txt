@@ -1,0 +1,10 @@
+CONSOLIDAÇÃO V9
+- Mantém todo o Design System e todas as telas da V8.
+- Instalador corrigido para caminho real ou caminho informado pelo usuário.
+- Backup integral da pasta lib antes da instalação.
+- Registro completo da instalação.
+- Relatório separado do flutter analyze.
+- Opção de reversão automática em caso de falha.
+- Script manual de restauração.
+- Validação prévia de pubspec.yaml, Flutter, Dart e pasta lib do pacote.
+- Estrutura interna de imports validada contra o pacote e a pasta features original.

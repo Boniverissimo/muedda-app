@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_spacing.dart';
+
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/categories_providers.dart';
 import '../../../transactions/presentation/pages/new_transaction_page.dart';
@@ -32,13 +36,24 @@ class _SmartEntryPageState extends ConsumerState<SmartEntryPage> {
         ref.watch(categoriesStreamProvider).valueOrNull ?? const <Category>[];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Registro inteligente')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        leading: const MueddaBackButton(),
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        title: const Text(
+          'Registro inteligente',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 40,
+          ),
           children: [
             Text(
-              'Conte o que aconteceu',
+              'Registre com suas palavras',
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -55,9 +70,14 @@ class _SmartEntryPageState extends ConsumerState<SmartEntryPage> {
               minLines: 4,
               maxLines: 7,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                hintText: 'Descreva a movimentação...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: 'Ex.: Paguei R\$ 89,90 no mercado ontem',
+                filled: true,
+                fillColor: AppColors.surface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
                 alignLabelWithHint: true,
               ),
               onSubmitted: (_) => _interpret(),

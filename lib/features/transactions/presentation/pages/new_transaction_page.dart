@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/accounts_providers.dart';
 import '../../../../core/providers/categories_providers.dart';
@@ -100,7 +101,8 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Nova transação')),
+      appBar: AppBar(
+        leading: const MueddaBackButton(),title: const Text('Nova transação')),
       body: SafeArea(
         child: Form(
           key: _formKey,

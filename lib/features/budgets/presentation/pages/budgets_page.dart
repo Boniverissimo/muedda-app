@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/ui/components/muedda_back_button.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/providers/budgets_providers.dart';
 import '../../../../core/providers/categories_providers.dart';
@@ -19,8 +20,20 @@ class BudgetsPage extends ConsumerWidget {
     final currency = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: const Text('Orçamentos'),
+        leading: const MueddaBackButton(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        titleSpacing: 20,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Orçamentos', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+            Text('Controle seus limites mensais', style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
         actions: [
           IconButton(
             tooltip: 'Atualizar',
@@ -32,6 +45,8 @@ class BudgetsPage extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         onPressed: () async {
           final categories =
               categoriesAsync.asData?.value ?? const <Category>[];
@@ -124,7 +139,7 @@ class BudgetsPage extends ConsumerWidget {
               ref.invalidate(ledgerEntriesStreamProvider);
             },
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 120),
               children: [
                 _OverallBudgetCard(
                   spentCents: totalSpent,
@@ -321,8 +336,14 @@ class _EmptyBudgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: Container(
+        margin: const EdgeInsets.all(24),
         padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.6)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -366,42 +387,68 @@ class _OverallBudgetCard extends StatelessWidget {
     final color = _progressColor(context, progress);
     final remaining = limitCents - spentCents;
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primaryContainer,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(Icons.pie_chart_outline),
+                Icon(Icons.donut_large_rounded, color: Theme.of(context).colorScheme.onPrimary),
                 const SizedBox(width: 8),
                 Text(
                   'Orçamento geral do mês',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w700),
                 ),
                 const Spacer(),
-                Text('${(progress * 100).round()}%'),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text('${(progress * 100).round()}%', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w800)),
+                ),
               ],
             ),
             const SizedBox(height: 16),
             LinearProgressIndicator(
               value: progress.clamp(0, 1),
               minHeight: 10,
-              color: color,
+              color: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(8),
             ),
             const SizedBox(height: 12),
             Text(
               '${currency.format(spentCents / 100)} de ${currency.format(limitCents / 100)}',
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 4),
             Text(
               remaining >= 0
                   ? '${currency.format(remaining / 100)} disponíveis'
                   : '${currency.format((-remaining) / 100)} acima do limite',
-              style: TextStyle(color: remaining >= 0 ? null : color),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.82)),
             ),
           ],
         ),
@@ -434,17 +481,32 @@ class _BudgetCard extends StatelessWidget {
     final color = _progressColor(context, progress);
     final remaining = budget.monthlyLimitCents - data.spentCents;
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.55)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 CircleAvatar(
+                  radius: 22,
+                  backgroundColor: color.withValues(alpha: 0.12),
                   child: Text(
                     (data.category?.name ?? '?').characters.first.toUpperCase(),
+                    style: TextStyle(color: color, fontWeight: FontWeight.w800),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -456,9 +518,17 @@ class _BudgetCard extends StatelessWidget {
                         data.category?.name ?? 'Categoria removida',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      Text(
-                        budget.isActive ? 'Ativo' : 'Pausado',
-                        style: Theme.of(context).textTheme.bodySmall,
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: budget.isActive ? color.withValues(alpha: 0.10) : Theme.of(context).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          budget.isActive ? 'Ativo' : 'Pausado',
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: budget.isActive ? color : null, fontWeight: FontWeight.w700),
+                        ),
                       ),
                     ],
                   ),
@@ -499,7 +569,7 @@ class _BudgetCard extends StatelessWidget {
                 children: [
                   LinearProgressIndicator(
                     value: progress.clamp(0, 1),
-                    minHeight: 9,
+                    minHeight: 8,
                     color: color,
                     borderRadius: BorderRadius.circular(8),
                   ),

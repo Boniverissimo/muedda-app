@@ -1,0 +1,39 @@
+MUEDDA - PACOTE AMPLO FIGMA V3
+
+CONTEUDO
+- Todas as 38 implementacoes Dart da V2.
+- Design System em lib/core/ui.
+- Tema global em lib/app/theme.
+- Paleta clara e escura.
+- Componentes reutilizaveis de card, cabecalho, status, loading, erro e estado vazio.
+- Script automatico de aplicacao com backup.
+- Script de validacao.
+
+APLICACAO AUTOMATICA (RECOMENDADA)
+1. Extraia este ZIP.
+2. Abra PowerShell na pasta raiz do projeto Flutter.
+3. Execute:
+   & "CAMINHO_EXTRAIDO\APLICAR_ATUALIZACAO.ps1"
+
+Caso o PowerShell bloqueie o script:
+Set-ExecutionPolicy -Scope Process Bypass
+
+APLICACAO MANUAL
+Copie o conteudo da pasta lib deste pacote para a pasta lib do projeto, substituindo arquivos existentes.
+Depois execute:
+  dart format lib
+  flutter pub get
+  flutter analyze
+  flutter run
+
+INTEGRACAO DO TEMA
+No MaterialApp.router, use:
+  theme: AppTheme.light,
+  darkTheme: AppTheme.dark,
+  themeMode: ThemeMode.system,
+
+Importe:
+  import 'theme/app_theme.dart';
+
+IMPORTANTE
+O pacote foi validado quanto a estrutura e sintaxe basica dos arquivos, mas o flutter analyze completo precisa ser executado dentro do projeto inteiro, pois este pacote nao possui os DAOs, providers, repositories, router e pubspec completos.

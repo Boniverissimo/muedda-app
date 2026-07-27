@@ -1,0 +1,7 @@
+- Consolidação de todo o pacote V6.
+- Navegação adaptativa: bottom bar no celular e rail em telas >= 900 px.
+- Suporte estrutural ao tema escuro por ThemeExtension.
+- Navegação e FAB passaram a usar superfícies dinâmicas do tema.
+- Novo script de auditoria visual.
+- Novo instalador com backup e relatório flutter analyze.
+- Documentação final de aplicação.

@@ -22,7 +22,21 @@ class CreditCardsPage extends ConsumerWidget {
     };
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cartões de crédito')),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        title: const Text('Cartões'),
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        actions: [
+          IconButton(
+            tooltip: 'Novo cartão',
+            onPressed: () => _openForm(context, ref),
+            icon: const Icon(Icons.add_rounded),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: cardsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => _ErrorState(
@@ -45,7 +59,7 @@ class CreditCardsPage extends ConsumerWidget {
               await ref.read(creditCardsStreamProvider.future);
             },
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 104),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
               children: [
                 _CardsSummary(
                   activeCount: activeCount,
@@ -54,7 +68,7 @@ class CreditCardsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Seus cartões',
+                  'Meus cartões',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 12),
@@ -76,7 +90,7 @@ class CreditCardsPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'credit_cards_fab',
         onPressed: () => _openForm(context, ref),
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_rounded),
         label: const Text('Novo cartão'),
       ),
     );
@@ -268,17 +282,35 @@ class _CardsSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.primary,
+            colorScheme.primary.withValues(alpha: 0.78),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.22),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(22),
         child: Row(
           children: [
             CircleAvatar(
               radius: 25,
-              backgroundColor: colorScheme.primaryContainer,
+              backgroundColor: colorScheme.onPrimary.withValues(alpha: 0.16),
               child: Icon(
                 Icons.credit_card_outlined,
-                color: colorScheme.onPrimaryContainer,
+                color: colorScheme.onPrimary,
               ),
             ),
             const SizedBox(width: 14),
@@ -288,13 +320,16 @@ class _CardsSummary extends StatelessWidget {
                 children: [
                   Text(
                     'Limite total ativo',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onPrimary.withValues(alpha: 0.78),
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     _formatCurrency(totalLimitCents),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ],
@@ -303,10 +338,16 @@ class _CardsSummary extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
+                color: colorScheme.onPrimary.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(999),
               ),
-              child: Text('$activeCount/$totalCount ativos'),
+              child: Text(
+                '$activeCount/$totalCount ativos',
+                style: TextStyle(
+                  color: colorScheme.onPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ],
         ),
@@ -335,23 +376,23 @@ class _CreditCardTile extends StatelessWidget {
       button: true,
       label: 'Abrir opções do cartão ${card.name}',
       child: InkWell(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(26),
         onTap: onTap,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 180),
           opacity: card.isActive ? 1 : 0.58,
           child: Container(
             width: double.infinity,
-            height: 200,
+            height: 214,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: cardColor,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(26),
               boxShadow: [
                 BoxShadow(
                   color: cardColor.withValues(alpha: 0.24),
-                  blurRadius: 18,
-                  offset: const Offset(0, 8),
+                  blurRadius: 26,
+                  offset: const Offset(0, 12),
                 ),
               ],
             ),

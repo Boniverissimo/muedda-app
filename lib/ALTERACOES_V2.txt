@@ -1,0 +1,41 @@
+ALTERAÇÕES PRINCIPAIS — V2
+==========================
+
+CONSOLIDAÇÃO
+- Incorpora todas as entregas Figma V1 anteriores em um único pacote.
+- Mantém a estrutura original de features para reduzir conflitos de integração.
+
+NOVA PADRONIZAÇÃO
+- Fundos, cabeçalhos e elevação visual padronizados.
+- Cores AppColors aplicadas nas telas restantes.
+- Espaçamentos AppSpacing aplicados nas listas principais.
+- FABs padronizados com cor primária e contraste correto.
+
+MENU MAIS
+- Novo cabeçalho em gradiente.
+- Organização por grupos funcionais.
+- Entrada inteligente adicionada ao menu.
+- Cards, ícones e divisores redesenhados.
+
+CATEGORIAS
+- Abas e indicador visual modernizados.
+- Estados de carregamento e erro alinhados ao restante do app.
+- FAB e fundo atualizados.
+
+RELATÓRIOS
+- Cabeçalho e fundo integrados ao Design System.
+- Cálculos, exportação e providers preservados.
+
+A PAGAR E RECEBER
+- Cabeçalho, fundo, espaçamentos e FAB atualizados.
+- Filtros, resumo, baixa, edição, duplicação e exclusão preservados.
+
+RECORRÊNCIAS
+- Cabeçalho e ações atualizados.
+- Lista e FAB integrados ao padrão visual.
+- Geração automática e formulários preservados.
+
+ENTRADA INTELIGENTE
+- Campo de texto redesenhado.
+- Exemplo em pt-BR e fluxo de interpretação preservados.
+- Integração com o formulário manual mantida.
